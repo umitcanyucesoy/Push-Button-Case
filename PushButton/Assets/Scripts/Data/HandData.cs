@@ -6,7 +6,7 @@ namespace Data
     public class HandData : ScriptableObject
     {
         [Header("~~~~~~~~~ HAND DATA ~~~~~~~~~")]
-        public int speed;
+        public float speed;
         public float forwardSpeed;
         public float minX;
         public float maxX;

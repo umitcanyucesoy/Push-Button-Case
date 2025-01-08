@@ -59,20 +59,31 @@ public class HandMovement : MonoBehaviour
 
     private void DragMove()
     {
-        float moveAmount = _currentDragPos.x - _dragStartPos.x;
+        float moveAmount = (_currentDragPos.x - _dragStartPos.x) * handData.speed;
 
-        Vector3 newPosition = transform.position + new Vector3(moveAmount * handData.speed * Time.deltaTime, 0f, 0f);
+        Vector3 newPosition = transform.position + new Vector3(moveAmount, 0f, 0f);
+
+        // X ekseni sınırlarını uygula
         newPosition.x = Mathf.Clamp(newPosition.x, handData.minX, handData.maxX);
+
+        // Y ve Z eksenlerini sabit tut
         newPosition.y = transform.position.y;
         newPosition.z = transform.position.z;
 
+        // Yeni pozisyona taşı
         transform.position = newPosition;
+
+        // Sadece drag sırasında pozisyonu güncelle
         _dragStartPos = _currentDragPos;
     }
 
     private Vector3 GetMouseWorldPosition(Vector3 screenPosition)
     {
-        screenPosition.z = _mainCamera.WorldToScreenPoint(transform.position).z;
+        // Kamera hesaplamalarını optimize etmek için z eksenini bir kere hesaplayın
+        float zPosition = _mainCamera.WorldToScreenPoint(transform.position).z;
+        screenPosition.z = zPosition;
+
         return _mainCamera.ScreenToWorldPoint(screenPosition);
     }
+
 }
