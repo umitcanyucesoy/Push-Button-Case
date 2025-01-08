@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 6227998164449864700}
   - component: {fileID: 7159530311808959106}
   - component: {fileID: 2127721681691298848}
+  - component: {fileID: 3640973335427383804}
   m_Layer: 0
   m_Name: KeyboardButton
   m_TagString: Button
@@ -278,3 +279,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.33329174, y: 0.38761368, z: 0.34000233}
   m_Center: {x: -0.006482497, y: -0.010634109, z: 0.028473154}
+--- !u!114 &3640973335427383804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6901488879892762298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9f66f2cdfe4465ca8c847f846719b98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultMaterial: {fileID: 2100000, guid: a2cf4d06cd32746d3a1754855f8c959b, type: 2}
+  pressedMaterial: {fileID: 2100000, guid: bbf1aba1c6c524b6e9fe9f00d51ea996, type: 2}

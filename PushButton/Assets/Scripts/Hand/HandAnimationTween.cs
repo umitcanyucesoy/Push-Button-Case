@@ -7,9 +7,9 @@ namespace Hand
 {
     public class HandAnimationTween : MonoBehaviour
     {
-        [Header("Animation Settings")]
-        public float pressDuration = 0.5f; 
-        public float pressDistance = 0.5f; 
+        [Header("~~~~~~~~~ Animation Settings ~~~~~~~~~")]
+        [SerializeField] private float pressDuration = 0.5f; 
+        [SerializeField] private float pressDistance = 0.5f; 
         private Vector3 _startPosition;
 
         private void Start()

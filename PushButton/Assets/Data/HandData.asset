@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: HandData
   m_EditorClassIdentifier: 
   speed: 100
-  forwardSpeed: 0.2
+  forwardSpeed: 1
   minX: -0.05
   maxX: 1.22
