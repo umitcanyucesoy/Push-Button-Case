@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a54362af11d742bba8296703301b0525, type: 3}
   m_Name: HandData
   m_EditorClassIdentifier: 
-  speed: 100
-  forwardSpeed: 1
+  speed: 70
+  forwardSpeed: 0.5
   minX: -0.05
   maxX: 1.22
