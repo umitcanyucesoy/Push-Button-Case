@@ -11,6 +11,7 @@ namespace Hand
         [SerializeField] private float pressDuration = 0.5f; 
         [SerializeField] private float pressDistance = 0.5f; 
         private Vector3 _startPosition;
+        private bool _isDestroyed = false;
 
         private void Start()
         {
@@ -18,15 +19,24 @@ namespace Hand
             HandPressAnimation().Forget();
         }
 
+        private void OnDestroy()
+        {
+            _isDestroyed = true;
+        }
+
         private async UniTask HandPressAnimation()
         {
             while (true)
             {
+                if (_isDestroyed) break;
+
                 transform.DOMoveY(_startPosition.y - pressDistance, pressDuration / 2).SetEase(Ease.InOutSine);
-                await UniTask.Delay(TimeSpan.FromSeconds(pressDuration/2));
-                
+                await UniTask.Delay(TimeSpan.FromSeconds(pressDuration / 2));
+
+                if (_isDestroyed) break;
+
                 transform.DOMoveY(_startPosition.y, pressDuration / 2).SetEase(Ease.InOutSine);
-                await UniTask.Delay(TimeSpan.FromSeconds(pressDuration/2));
+                await UniTask.Delay(TimeSpan.FromSeconds(pressDuration / 2));
             }
         }
     }

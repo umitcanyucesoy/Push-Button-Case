@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.5
   forwardSpeed: 0.5
-  minX: -0.05
-  maxX: 1.22
+  minX: -0.03
+  maxX: 1.19

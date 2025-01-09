@@ -6,18 +6,19 @@ using TMPro;
 public class GateTrigger : MonoBehaviour
 {
     [Header("Gate Settings")]
-    public bool isGreenGate; // Yeşil gate mi, kırmızı gate mi?
-    [SerializeField] private TextMeshPro textMesh; // Gate üzerindeki yazı
-    private bool _hasTriggered = false; // Trigger kontrolü
+    public bool isGreenGate;
+    [SerializeField] private TextMeshPro textMesh;
+    private bool _hasTriggered = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (_hasTriggered) return; // Daha önce tetiklendiyse işlemi durdur
-        if (!other.CompareTag("Hand")) return; // Sadece "Hand" tag'i olan objeler tetiklesin
+        if (_hasTriggered) return;
+        if (!other.CompareTag("Hand")) return;
 
-        _hasTriggered = true; // İlk tetiklemeden sonra bu true olacak
+        _hasTriggered = true;
 
         int valueChange = GetValueFromText();
+        Debug.Log($"Gate Triggered! Value: {valueChange}, Is Green Gate: {isGreenGate}");
 
         if (isGreenGate)
         {
@@ -28,6 +29,7 @@ public class GateTrigger : MonoBehaviour
             HandManager.Instance.RemoveHands(valueChange);
         }
     }
+
 
     private int GetValueFromText()
     {

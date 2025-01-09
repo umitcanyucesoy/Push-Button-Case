@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Data;
 using UnityEngine;
@@ -28,7 +27,10 @@ public class HandMovement : MonoBehaviour
     private void MoveForward()
     {
         if (_isMovingForward)
+        {
             transform.Translate(Vector3.forward * (handData.forwardSpeed * Time.deltaTime), Space.World);
+            Hand.HandManager.Instance.UpdateHandPositions(); 
+        }
     }
 
     private void HandleDrag()
@@ -39,7 +41,6 @@ public class HandMovement : MonoBehaviour
 
             if (touch.phase == TouchPhase.Began)
                 StartDrag(touch.position);
-            
 
             if (touch.phase == TouchPhase.Moved)
                 PerformDrag(touch.position);
@@ -68,14 +69,13 @@ public class HandMovement : MonoBehaviour
 
         transform.position = newPosition;
         _dragStartPos = _currentDragPos;
+
+        Hand.HandManager.Instance.UpdateHandPositions();
     }
 
     private Vector3 GetMouseWorldPosition(Vector3 screenPosition)
     {
-        float zPosition = _mainCamera.WorldToScreenPoint(transform.position).z;
-        screenPosition.z = zPosition;
-
+        screenPosition.z = _mainCamera.WorldToScreenPoint(transform.position).z;
         return _mainCamera.ScreenToWorldPoint(screenPosition);
     }
-
 }
