@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Data;
 using DG.Tweening;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace Hand
         public GameObject handPrefab;
         public Transform handContainer;
         public GameObject mainHand;
+        public HandData handData;
         private readonly List<GameObject> _handLists = new List<GameObject>();
         private const int MaxHands = 5;
 
@@ -62,6 +64,21 @@ namespace Hand
 
             UpdateHandPositions();
         }
+        
+        public void AddRowToHands()
+        {
+            List<GameObject> newHands = new List<GameObject>();
+
+            foreach (var hand in _handLists)
+            {
+                
+                Vector3 newHandPosition = hand.transform.position + hand.transform.right * 0.5f;
+                GameObject newHand = Instantiate(handPrefab, newHandPosition, handContainer.rotation, handContainer);
+                newHands.Add(newHand);
+            }
+
+            _handLists.AddRange(newHands);
+        }
 
 
         public void UpdateHandPositions()
@@ -72,22 +89,36 @@ namespace Hand
             for (int i = 1; i < _handLists.Count; i++)
             {
                 float direction = i % 2 == 0 ? 1f : -1f;
-                float xPosition = basePosition.x + (direction * offset * ((i + 1) / 2));
+                float zPosition = Mathf.Clamp(basePosition.z + (direction * offset * ((i + 1) / 2)), handData.minZ, handData.maxZ);
 
-                Vector3 newPosition = new Vector3(xPosition, basePosition.y, basePosition.z);
+                Vector3 newPosition = new Vector3(basePosition.x, basePosition.y, zPosition);
                 _handLists[i].transform.position = newPosition;
             }
+        }
+        
+        public bool IsAtBoundary(float moveAmount)
+        {
+            foreach (var hand in _handLists)
+            {
+                float newZPosition = hand.transform.position.z + moveAmount;
+                
+                if (newZPosition <= handData.minZ || newZPosition >= handData.maxZ)
+                    return true;
+            }
+
+            return false;
         }
 
         private Vector3 GetNextHandPosition()
         {
             float offset = 0.21f;
             Vector3 basePosition = _handLists[0].transform.position;
+
             int handIndex = _handLists.Count;
             float direction = handIndex % 2 == 0 ? 1f : -1f;
-            float xPosition = basePosition.x + (direction * offset * ((handIndex + 1) / 2));
-
-            return new Vector3(xPosition, basePosition.y, basePosition.z);
+            
+            float zPosition = basePosition.z + (direction * offset * ((handIndex + 1) / 2));
+            return new Vector3(basePosition.x, basePosition.y, zPosition);
         }
     }
 }

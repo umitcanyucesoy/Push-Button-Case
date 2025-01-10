@@ -28,8 +28,8 @@ public class HandMovement : MonoBehaviour
     {
         if (_isMovingForward)
         {
-            transform.Translate(Vector3.forward * (handData.forwardSpeed * Time.deltaTime), Space.World);
-            Hand.HandManager.Instance.UpdateHandPositions(); 
+            transform.Translate(Vector3.right * (handData.forwardSpeed * Time.deltaTime), Space.World); // Z ekseni yerine X ekseni
+            Hand.HandManager.Instance.UpdateHandPositions();
         }
     }
 
@@ -60,12 +60,15 @@ public class HandMovement : MonoBehaviour
 
     private void DragMove()
     {
-        float moveAmount = (_currentDragPos.x - _dragStartPos.x) * handData.speed;
+        float moveAmount = (_currentDragPos.z - _dragStartPos.z) * handData.speed;
+        
+        if (Hand.HandManager.Instance.IsAtBoundary(moveAmount))
+            return;
 
-        Vector3 newPosition = transform.position + new Vector3(moveAmount, 0f, 0f);
-        newPosition.x = Mathf.Clamp(newPosition.x, handData.minX, handData.maxX);
+        Vector3 newPosition = transform.position + new Vector3(0f, 0f, moveAmount);
+        newPosition.z = Mathf.Clamp(newPosition.z, handData.minZ, handData.maxZ);
         newPosition.y = transform.position.y;
-        newPosition.z = transform.position.z;
+        newPosition.x = transform.position.x;
 
         transform.position = newPosition;
         _dragStartPos = _currentDragPos;

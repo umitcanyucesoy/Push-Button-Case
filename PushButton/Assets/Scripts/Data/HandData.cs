@@ -8,7 +8,7 @@ namespace Data
         [Header("~~~~~~~~~ HAND DATA ~~~~~~~~~")]
         public float speed;
         public float forwardSpeed;
-        public float minX;
-        public float maxX;
+        public float minZ;
+        public float maxZ;
     }
 }
