@@ -14,6 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.5
   forwardSpeed: 0.5
-  minZ: -0.168
-  maxZ: 1.152
-  zBuffer: 0.1
+  minZ: -0.7
+  maxZ: 0.7

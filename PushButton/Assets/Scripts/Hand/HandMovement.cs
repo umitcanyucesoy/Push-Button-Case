@@ -21,6 +21,8 @@ namespace Hand
 
         private void Update()
         {
+            if (!this.enabled) return;
+            
             MoveForward();
             HandleDrag();
         }
@@ -71,14 +73,13 @@ namespace Hand
             {
                 return;
             }
-            
             float actualMoveZ = clampedZ - transform.position.z;
-            
-            Vector3 newPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z + actualMoveZ);
-            transform.position = newPosition;
+            HandManager.Instance.handContainer.Translate(new Vector3(0f, 0f, actualMoveZ), Space.World);
             
             _dragStartPos = _currentDragPos;
         }
+        
+        
 
         private Vector3 GetWorldPosition(Vector2 screenPosition)
         {
