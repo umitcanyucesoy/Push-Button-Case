@@ -16,3 +16,4 @@ MonoBehaviour:
   forwardSpeed: 0.5
   minZ: -0.168
   maxZ: 1.152
+  zBuffer: 0.1

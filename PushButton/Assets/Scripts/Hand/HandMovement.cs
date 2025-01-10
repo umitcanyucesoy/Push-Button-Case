@@ -1,82 +1,95 @@
-using System.Collections.Generic;
-using Data;
-using Hand;
 using UnityEngine;
+using Data;
 
-public class HandMovement : MonoBehaviour
+namespace Hand
 {
-    [Header("~~~~~~~~~ MOVEMENT SETTINGS ~~~~~~~~~")]
-    private Vector3 _dragStartPos;
-    private Vector3 _currentDragPos;
-    private bool _isMovingForward = true;
-
-    [Header("~~~~~~~~~ MOVEMENT ELEMENTS ~~~~~~~~~")]
-    [SerializeField] private HandData handData;
-    private UnityEngine.Camera _mainCamera;
-
-    private void Start()
+    public class HandMovement : MonoBehaviour
     {
-        _mainCamera = UnityEngine.Camera.main;
-    }
+        [Header("~~~~~~~~~ MOVEMENT SETTINGS ~~~~~~~~~")]
+        private Vector3 _dragStartPos;
+        private Vector3 _currentDragPos;
+        private bool _isMovingForward = true;
 
-    private void Update()
-    {
-        MoveForward();
-        HandleDrag();
-    }
-    
-    private void MoveForward()
-    {
-        if (_isMovingForward)
+        [Header("~~~~~~~~~ MOVEMENT ELEMENTS ~~~~~~~~~")]
+        [SerializeField] private HandData handData;
+        private UnityEngine.Camera _mainCamera;
+
+        private void Start()
         {
-            transform.Translate(Vector3.right * (handData.forwardSpeed * Time.deltaTime), Space.World); // Z ekseni yerine X ekseni
+            _mainCamera = UnityEngine.Camera.main;
         }
-    }
 
-    private void HandleDrag()
-    {
-        if (Input.touchCount > 0)
+        private void Update()
         {
-            Touch touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Began)
-                StartDrag(touch.position);
-
-            if (touch.phase == TouchPhase.Moved)
-                PerformDrag(touch.position);
+            MoveForward();
+            HandleDrag();
         }
-    }
-
-    private void StartDrag(Vector2 touchPosition)
-    {
-        _dragStartPos = GetMouseWorldPosition(touchPosition);
-    }
-
-    private void PerformDrag(Vector2 touchPosition)
-    {
-        _currentDragPos = GetMouseWorldPosition(touchPosition);
-        DragMove();
-    }
-
-    private void DragMove()
-    {
-        float moveAmount = (_currentDragPos.z - _dragStartPos.z) * handData.speed;
         
-        if (HandManager.Instance.IsAtBoundary(moveAmount))
-            return;
+        private void MoveForward()
+        {
+            if (_isMovingForward)
+            {
+                float moveX = handData.forwardSpeed * Time.deltaTime;
+                transform.Translate(Vector3.right * moveX, Space.World);
+            }
+        }
 
-        Vector3 newPosition = transform.position + new Vector3(0f, 0f, moveAmount);
-        newPosition.z = Mathf.Clamp(newPosition.z, handData.minZ, handData.maxZ);
-        newPosition.y = transform.position.y;
-        newPosition.x = transform.position.x;
+        private void HandleDrag()
+        {
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
 
-        transform.position = newPosition;
-        _dragStartPos = _currentDragPos;
-    }
+                if (touch.phase == TouchPhase.Began)
+                    StartDrag(touch.position);
 
-    private Vector3 GetMouseWorldPosition(Vector3 screenPosition)
-    {
-        screenPosition.z = _mainCamera.WorldToScreenPoint(transform.position).z;
-        return _mainCamera.ScreenToWorldPoint(screenPosition);
+                if (touch.phase == TouchPhase.Moved)
+                    PerformDrag(touch.position);
+            }
+        }
+
+        private void StartDrag(Vector2 touchPosition)
+        {
+            _dragStartPos = GetWorldPosition(touchPosition);
+        }
+
+        private void PerformDrag(Vector2 touchPosition)
+        {
+            _currentDragPos = GetWorldPosition(touchPosition);
+            DragMove();
+        }
+
+        private void DragMove()
+        {
+            float moveAmountZ = (_currentDragPos.z - _dragStartPos.z) * handData.speed;
+            
+            float desiredZ = transform.position.z + moveAmountZ;
+            
+            float clampedZ = Mathf.Clamp(desiredZ, handData.minZ, handData.maxZ);
+            
+            if ((clampedZ == handData.minZ && moveAmountZ < 0) || (clampedZ == handData.maxZ && moveAmountZ > 0))
+            {
+                return;
+            }
+            
+            float actualMoveZ = clampedZ - transform.position.z;
+            
+            Vector3 newPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z + actualMoveZ);
+            transform.position = newPosition;
+            
+            _dragStartPos = _currentDragPos;
+        }
+
+        private Vector3 GetWorldPosition(Vector2 screenPosition)
+        {
+            Ray ray = _mainCamera.ScreenPointToRay(screenPosition);
+            Plane plane = new Plane(Vector3.up, transform.position);
+            float distance;
+            if (plane.Raycast(ray, out distance))
+            {
+                return ray.GetPoint(distance);
+            }
+            return transform.position;
+        }
     }
 }
