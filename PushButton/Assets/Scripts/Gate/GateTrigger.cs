@@ -6,8 +6,8 @@ using TMPro;
 public class GateTrigger : MonoBehaviour
 {
     [Header("Gate Settings")]
-    public bool isGreenGate;
     [SerializeField] private TextMeshPro textMesh;
+    public bool isGreenGate;
     private bool _hasTriggered = false;
 
     private void OnTriggerEnter(Collider other)
@@ -29,8 +29,7 @@ public class GateTrigger : MonoBehaviour
             HandManager.Instance.RemoveHands(valueChange);
         }
     }
-
-
+    
     private int GetValueFromText()
     {
         string text = textMesh.text.Trim();

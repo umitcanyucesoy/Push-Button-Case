@@ -16,6 +16,12 @@ namespace Hand
         public HandData handData;
         private readonly List<GameObject> _handLists = new List<GameObject>();
         private const int MaxHands = 5;
+        
+        // Animasyon ayarları
+        [Header("~~~~~~~~ ANIMATION SETTINGS ~~~~~~~~~")]
+        public float pressDuration = 0.5f;
+        public float pressDistance = 0.25f;
+        private Sequence _animationSequence;
 
         private void Awake()
         {
@@ -32,6 +38,26 @@ namespace Hand
         private void Start()
         {
             _handLists.Add(mainHand);
+            InitializeAnimation();
+        }
+        
+        private void InitializeAnimation()
+        {
+            _animationSequence = DOTween.Sequence()
+                .SetLoops(-1) // Sonsuz döngü
+                .AppendInterval(0f) // Başlangıçta herhangi bir gecikme olmaz
+                .Append(handContainer.DOMoveY(handContainer.position.y - pressDistance, pressDuration / 2)
+                    .SetEase(Ease.InOutSine))
+                .Append(handContainer.DOMoveY(handContainer.position.y, pressDuration / 2)
+                    .SetEase(Ease.InOutSine));
+        }
+        
+        private void OnDestroy()
+        {
+            if (_animationSequence != null && _animationSequence.IsActive())
+            {
+                _animationSequence.Kill();
+            }
         }
 
         public void AddHands(int count)
@@ -43,8 +69,6 @@ namespace Hand
                 var newHand = Instantiate(handPrefab, GetNextHandPosition(), handContainer.rotation, handContainer);
                 _handLists.Add(newHand);
             }
-
-            UpdateHandPositions();
         }
 
         public void RemoveHands(int count)
@@ -61,8 +85,6 @@ namespace Hand
                 
                 Destroy(handToRemove);
             }
-
-            UpdateHandPositions();
         }
         
         public void AddRowToHands()
@@ -71,29 +93,25 @@ namespace Hand
 
             foreach (var hand in _handLists)
             {
-                
-                Vector3 newHandPosition = hand.transform.position + hand.transform.right * 0.5f;
+                // Yeni elin pozisyonunu hesapla
+                Vector3 newHandPosition = new Vector3(
+                    hand.transform.position.x + 0.5f,  // X ekseninde öne
+                    hand.transform.position.y,        // Y ekseni sabit
+                    hand.transform.position.z         // Z ekseni sabit
+                );
+
                 GameObject newHand = Instantiate(handPrefab, newHandPosition, handContainer.rotation, handContainer);
                 newHands.Add(newHand);
+
+                // Yeni ele animasyon ekle
+                var newHandAnimation = newHand.GetComponent<HandAnimationTween>();
+                if (newHandAnimation != null)
+                {
+                    newHandAnimation.enabled = true;
+                }
             }
 
             _handLists.AddRange(newHands);
-        }
-
-
-        public void UpdateHandPositions()
-        {
-            float offset = 0.21f;
-            Vector3 basePosition = _handLists[0].transform.position;
-
-            for (int i = 1; i < _handLists.Count; i++)
-            {
-                float direction = i % 2 == 0 ? 1f : -1f;
-                float zPosition = Mathf.Clamp(basePosition.z + (direction * offset * ((i + 1) / 2)), handData.minZ, handData.maxZ);
-
-                Vector3 newPosition = new Vector3(basePosition.x, basePosition.y, zPosition);
-                _handLists[i].transform.position = newPosition;
-            }
         }
         
         public bool IsAtBoundary(float moveAmount)
@@ -111,7 +129,7 @@ namespace Hand
 
         private Vector3 GetNextHandPosition()
         {
-            float offset = 0.21f;
+            float offset = 0.15f;
             Vector3 basePosition = _handLists[0].transform.position;
 
             int handIndex = _handLists.Count;
