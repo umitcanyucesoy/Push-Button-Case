@@ -109,7 +109,7 @@ namespace Hand
 
             foreach (var hand in _handLists)
             {
-                Vector3 newHandPosition = new Vector3(hand.transform.position.x + 0.3f, hand.transform.position.y, hand.transform.position.z);
+                Vector3 newHandPosition = new Vector3(hand.transform.position.x + 0.2f, hand.transform.position.y, hand.transform.position.z);
                 
                 if (newHandPosition.z > handData.maxZ || newHandPosition.z < handData.minZ)
                 {
@@ -132,18 +132,17 @@ namespace Hand
 
         private Vector3 GetNextHandPosition()
         {
-            float spacing = .1f;
-            _currentZOffset += spacing;
-            
+            float fixedZOffset = 0.15f; // Sabit Z offset değeri
             float direction = _addToRight ? 1f : -1f;
             _addToRight = !_addToRight;
 
-            float newZ = _handLists[0].transform.position.z + direction * _currentZOffset;
-            
+            float newZ = mainHand.transform.position.z + direction * fixedZOffset;
+
             newZ = Mathf.Clamp(newZ, handData.minZ, handData.maxZ);
-            
-            Vector3 basePosition = _handLists[0].transform.position;
-            return new Vector3(basePosition.x, basePosition.y, newZ);
+
+            return new Vector3(mainHand.transform.position.x, mainHand.transform.position.y, newZ);
         }
+
+
     }
 }
