@@ -15,31 +15,27 @@ namespace KeyboardButton
         [SerializeField] private Material orangeMaterial;
         [SerializeField] private TextMeshPro buttonText;
         private int _pressCount = 0;
-        private bool _isInteractable = true;
+        private bool _isAnimating = false;
 
         public async UniTask AnimateButton()
         {
-            if (_pressCount >= 3 || !_isInteractable) return;
-            
+            if (_pressCount >= 3 || _isAnimating) return;
+
             _pressCount++;
-            _isInteractable = false;
-            
             if (_pressCount == 1 && buttonText != null)
                 buttonText.gameObject.SetActive(true);
             
             UpdateButtonAppearance();
 
+            _isAnimating = true;
+
             float downDistance = _pressCount == 1 ? 0.2f : 0.1f;
             float upDistance = _pressCount == 1 ? 0.25f : 0.1f;
 
-            transform.DOMoveY(transform.position.y - downDistance, 0.1f).SetEase(Ease.InOutSine)
-                .OnComplete(() =>
-                {
-                    transform.DOMoveY(transform.position.y + upDistance, 0.1f).SetEase(Ease.OutBounce);
-                });
-
-           await UniTask.Delay(TimeSpan.FromSeconds(0.35f));
-           _isInteractable = true;
+            await transform.DOMoveY(transform.position.y - downDistance, 0.1f).SetEase(Ease.InOutSine).AsyncWaitForCompletion();
+            await transform.DOMoveY(transform.position.y + upDistance, 0.1f).SetEase(Ease.OutBounce).AsyncWaitForCompletion();
+            
+            _isAnimating = false;
         }
 
         private void UpdateButtonAppearance()

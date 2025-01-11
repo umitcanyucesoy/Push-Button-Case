@@ -21,8 +21,6 @@ namespace Hand
         public float pressDuration = 0.5f;
         public float pressDistance = 0.25f;
         private Sequence _animationSequence;
-        
-        private float _currentZOffset = 0f;
         private bool _addToRight = true;
 
         private void Awake()

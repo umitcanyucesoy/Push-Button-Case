@@ -21,7 +21,7 @@ namespace Hand
 
         private void Update()
         {
-            if (!this.enabled) return;
+            if (!enabled) return;
             
             MoveForward();
             HandleDrag();

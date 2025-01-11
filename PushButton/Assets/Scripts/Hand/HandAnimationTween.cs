@@ -8,8 +8,8 @@ namespace Hand
     public class HandAnimationTween : MonoBehaviour
     {
         [Header("~~~~~~~~~ Animation Settings ~~~~~~~~~")]
-        [SerializeField] private float pressDuration = 0.5f; 
-        [SerializeField] private float pressDistance = 0.5f; 
+        [SerializeField] private float pressDuration = 0.2f; 
+        [SerializeField] private float pressDistance = 0.25f; 
         private Vector3 _startPosition;
         private bool _isDestroyed = false;
 
