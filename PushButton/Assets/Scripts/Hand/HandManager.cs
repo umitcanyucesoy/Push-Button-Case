@@ -7,32 +7,30 @@ namespace Hand
 {
     public class HandManager : MonoBehaviour
     {
-        public static HandManager Instance;
-
-        [Header("~~~~~~~~ HAND SETTINGS ~~~~~~~~~")]
-        public GameObject handPrefab;
+        [Header("~~~~~~~~ HAND ELEMENTS ~~~~~~~~~")]
+        [SerializeField] private GameObject handPrefab; 
+        [SerializeField] private GameObject mainHand;
+        [SerializeField] private HandData handData;
         public Transform handContainer;
-        public GameObject mainHand;
-        public HandData handData;
+        
+        [Header("~~~~~~~~ HAND SETTINGS ~~~~~~~~")]
         private readonly List<GameObject> _handLists = new List<GameObject>();
         private const int MaxHands = 5;
         
         [Header("~~~~~~~~ ANIMATION SETTINGS ~~~~~~~~~")]
         public float pressDuration = 0.5f;
-        public float pressDistance = 0.25f;
         private Sequence _animationSequence;
         private bool _addToRight = true;
-
+        private float _initialYPosition;
+        private const float FixedMovementRange = 0.25f;
+        
+        public static HandManager Instance;
         private void Awake()
         {
             if (Instance == null)
-            {
                 Instance = this;
-            }
             else
-            {
                 Destroy(gameObject);
-            }
         }
 
         private void Start()
@@ -47,6 +45,7 @@ namespace Hand
 
             mainHand.transform.parent = handContainer;
             _handLists.Add(mainHand);
+            _initialYPosition = handContainer.position.y;
             InitializeAnimation();
         }
         
@@ -55,25 +54,18 @@ namespace Hand
             _animationSequence = DOTween.Sequence()
                 .SetLoops(-1)
                 .AppendInterval(0f)
-                .Append(handContainer.DOMoveY(handContainer.position.y - pressDistance, pressDuration / 2)
-                    .SetEase(Ease.InOutSine))
-                .Append(handContainer.DOMoveY(handContainer.position.y, pressDuration / 2)
-                    .SetEase(Ease.InOutSine));
+                .Append(handContainer.DOMoveY(_initialYPosition - FixedMovementRange, pressDuration / 2)
+                    .SetEase(Ease.InOutQuad))
+                .Append(handContainer.DOMoveY(_initialYPosition, pressDuration / 2)
+                    .SetEase(Ease.InOutQuad));
         }
         
         private void OnDestroy()
         {
             if (_animationSequence != null && _animationSequence.IsActive())
-            {
                 _animationSequence.Kill();
-            }
         }
         
-
-        /// <summary>
-        /// Width gate değerine göre el ekler.
-        /// width: 1 veya 2
-        /// </summary>
         public void AddHands(int count)
         {
             int handsToAdd = Mathf.Min(count, MaxHands - _handLists.Count);
@@ -82,28 +74,14 @@ namespace Hand
             {
                 Vector3 nextPosition = GetNextHandPosition();
                 
-                if (nextPosition.z > handData.maxZ || nextPosition.z < handData.minZ)
-                {
-                    Debug.LogWarning("Z sınırına ulaşıldı. Daha fazla el eklenemiyor.");
-                    break;
-                }
+                if (nextPosition.z > handData.maxZ || nextPosition.z < handData.minZ) {break;}
 
                 var newHand = Instantiate(handPrefab, nextPosition, handContainer.rotation, handContainer);
                 _handLists.Add(newHand);
                 
-                var handAnimation = newHand.GetComponent<HandAnimationTween>();
-                if (handAnimation != null)
-                {
-                    handAnimation.enabled = false;
-                }
-                
                 var handMovement = newHand.GetComponent<HandMovement>();
-                if (handMovement != null)
-                {
+                if (handMovement)
                     handMovement.enabled = false;
-                }
-
-                Debug.Log($"Yeni el eklendi: Pozisyon: {newHand.transform.position}");
             }
         }
 
@@ -120,18 +98,12 @@ namespace Hand
                 DOTween.Kill(handToRemove.transform);
                 
                 Destroy(handToRemove);
-                Debug.Log($"El kaldırıldı: Pozisyon: {handToRemove.transform.position}");
             }
         }
         
-        
-        /// <summary>
-        /// Length gate geçildiğinde mevcut tüm ellerin önüne yeni eller ekler.
-        /// Y ve Z eksenlerinde değişiklik yapmaz, sadece X ekseninde sabit bir offset ile ileri ekler.
-        /// </summary>
         public void AddRowToHands()
         {
-            float fixedXOffset = 0.14f; // Sabit X offset değeri
+            float fixedXOffset = 0.14f;
             List<GameObject> currentHands = new List<GameObject>(_handLists);
             List<GameObject> newHands = new List<GameObject>();
 
@@ -139,32 +111,39 @@ namespace Hand
             {
                 Vector3 newHandPosition = new Vector3(hand.transform.position.x + fixedXOffset, hand.transform.position.y, hand.transform.position.z);
 
-                // X sınırlarını kontrol edebilirsiniz (handData.minX ve handData.maxX gibi) eğer gerekiyorsa
-                // Örneğin:
-                // if (newHandPosition.x > handData.maxX || newHandPosition.x < handData.minX)
-                // {
-                //     Debug.LogWarning("X sınırına ulaşıldı. Daha fazla el eklenemiyor.");
-                //     continue;
-                // }
-
                 var newHand = Instantiate(handPrefab, newHandPosition, handContainer.rotation, handContainer);
                 newHands.Add(newHand);
-                
-                var handAnimation = newHand.GetComponent<HandAnimationTween>();
-                if (handAnimation != null)
-                {
-                    handAnimation.enabled = false;
-                }
-
-                Debug.Log($"Yeni sıra el eklendi: Pozisyon: {newHandPosition}");
             }
 
             _handLists.AddRange(newHands);
         }
+        
+        public void UpdatePressDuration(float valueChange)
+        {
+            pressDuration = Mathf.Clamp(pressDuration + valueChange, 0.35f, .7f); 
+            RestartAnimation();
+        }
+        
+        private void RestartAnimation()
+        {
+            if (_animationSequence != null && _animationSequence.IsActive())
+            {
+                _animationSequence.Kill();
+            }
+            
+            handContainer.position = new Vector3(handContainer.position.x, _initialYPosition, handContainer.position.z);
+            _animationSequence = DOTween.Sequence()
+                .SetLoops(-1)
+                .Append(handContainer.DOMoveY(_initialYPosition - FixedMovementRange, pressDuration / 2)
+                    .SetEase(Ease.InOutQuad))
+                .Append(handContainer.DOMoveY(_initialYPosition, pressDuration / 2)
+                    .SetEase(Ease.InOutQuad));
+        }
+        
 
         private Vector3 GetNextHandPosition()
         {
-            float fixedZOffset = 0.2f; // Sabit Z offset değeri
+            float fixedZOffset = 0.2f;
             float direction = _addToRight ? 1f : -1f;
             _addToRight = !_addToRight;
 

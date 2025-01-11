@@ -1,11 +1,12 @@
 using System.Globalization;
 using Hand;
+using SFX;
 using UnityEngine;
 using TMPro;
 
-public class GateTrigger : MonoBehaviour
+public class WidthGate : MonoBehaviour
 {
-    [Header("Gate Settings")]
+    [Header("~~~~~~~~~~~~ Gate ELEMENTS ~~~~~~~~~~~~")]
     [SerializeField] private TextMeshPro textMesh;
     public bool isGreenGate;
     private bool _hasTriggered = false;
@@ -16,34 +17,25 @@ public class GateTrigger : MonoBehaviour
         if (!other.CompareTag("Hand")) return;
 
         _hasTriggered = true;
-
         int valueChange = GetValueFromText();
-        Debug.Log($"Gate Triggered! Value: {valueChange}, Is Green Gate: {isGreenGate}");
 
         if (isGreenGate)
-        {
             HandManager.Instance.AddHands(valueChange);
-        }
         else
-        {
             HandManager.Instance.RemoveHands(valueChange);
-        }
+        
+        SfxManager.Instance.PlayGateSfx();
     }
     
     private int GetValueFromText()
     {
         string text = textMesh.text.Trim();
-        Debug.Log("Gate Text Value: " + text);
-
         text = text.Replace("+", "").Trim();
 
         if (float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
         {
-            Debug.Log("Parsed Value: " + value);
             return Mathf.RoundToInt(value);
         }
-
-        Debug.LogError("Invalid format for gate value: " + text);
         return 0;
     }
 }

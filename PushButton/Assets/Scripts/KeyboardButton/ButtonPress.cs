@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using SFX;
 using TMPro;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace KeyboardButton
 {
     public class ButtonPress : MonoBehaviour
     {
-        [Header("Button Settings")]
+        [Header("~~~~~~~~~~ Button ELEMENTS ~~~~~~~~~~")]
         [SerializeField] private Material greenMaterial;
         [SerializeField] private Material blueMaterial;
         [SerializeField] private Material orangeMaterial;
@@ -34,7 +35,7 @@ namespace KeyboardButton
 
             await transform.DOMoveY(transform.position.y - downDistance, 0.1f).SetEase(Ease.InOutSine).AsyncWaitForCompletion();
             await transform.DOMoveY(transform.position.y + upDistance, 0.1f).SetEase(Ease.OutBounce).AsyncWaitForCompletion();
-            
+            SfxManager.Instance.PlayButtonClickSfx();
             _isAnimating = false;
         }
 

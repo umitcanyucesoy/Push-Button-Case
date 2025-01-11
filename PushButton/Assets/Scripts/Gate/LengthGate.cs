@@ -1,3 +1,4 @@
+using SFX;
 using UnityEngine;
 
 namespace Gate
@@ -14,6 +15,8 @@ namespace Gate
             _hasTriggered = true;
 
             Hand.HandManager.Instance.AddRowToHands();
+            
+            SfxManager.Instance.PlayGateSfx();
         }
         
     }
