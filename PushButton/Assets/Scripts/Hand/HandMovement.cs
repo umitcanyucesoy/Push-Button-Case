@@ -48,7 +48,18 @@ namespace Hand
                 if (touch.phase == TouchPhase.Moved)
                     PerformDrag(touch.position);
             }
+            
+            if (Input.GetMouseButtonDown(0))
+            {
+                StartDrag(Input.mousePosition);
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                PerformDrag(Input.mousePosition);
+            }
         }
+
 
         private void StartDrag(Vector2 touchPosition)
         {

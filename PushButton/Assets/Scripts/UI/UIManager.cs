@@ -21,8 +21,11 @@ namespace UI
 
         private void Update()
         {
-            if ((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) && !_gameStarted)
+            if (!_gameStarted && 
+                (Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)))
+            {
                 StartGame();
+            }
         }
 
         private void AnimateTapToPlay()
