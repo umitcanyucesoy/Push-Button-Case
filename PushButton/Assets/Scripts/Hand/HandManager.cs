@@ -120,7 +120,7 @@ namespace Hand
         
         public void UpdatePressDuration(float valueChange)
         {
-            pressDuration = Mathf.Clamp(pressDuration + valueChange, 0.35f, .7f); 
+            pressDuration = Mathf.Clamp(pressDuration + valueChange, 0.3f, .6f); 
             RestartAnimation();
         }
         

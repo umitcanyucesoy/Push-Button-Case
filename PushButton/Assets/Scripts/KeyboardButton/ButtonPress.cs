@@ -33,7 +33,7 @@ namespace KeyboardButton
             float downDistance = _pressCount == 1 ? 0.2f : 0.1f;
             float upDistance = _pressCount == 1 ? 0.25f : 0.1f;
 
-            await transform.DOMoveY(transform.position.y - downDistance, 0.1f).SetEase(Ease.InOutSine).AsyncWaitForCompletion();
+            await transform.DOMoveY(transform.position.y - downDistance, 0.05f).SetEase(Ease.InOutSine).AsyncWaitForCompletion();
             await transform.DOMoveY(transform.position.y + upDistance, 0.1f).SetEase(Ease.OutBounce).AsyncWaitForCompletion();
             SfxManager.Instance.PlayButtonClickSfx();
             _isAnimating = false;
