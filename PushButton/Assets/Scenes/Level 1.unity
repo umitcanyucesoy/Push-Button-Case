@@ -12585,8 +12585,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 629ab5ee994f4a278405ba7236cfe802, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gateSfx: {fileID: 0}
-  buttonClickSfx: {fileID: 0}
+  gateSfx: {fileID: 8300000, guid: aa43c6e243e8845dfa66a73059509dc8, type: 3}
+  buttonClickSfx: {fileID: 8300000, guid: 1143c9d72c55b47c99453b8dcfc47637, type: 3}
 --- !u!4 &357080612
 Transform:
   m_ObjectHideFlags: 0
@@ -14760,13 +14760,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.58885866, y: 0.1843783, z: 0.3179997, w: 0.71980995}
+  m_LocalPosition: {x: -0.67, y: 4.04, z: -2.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 46.926, y: 69.56, z: 81.22}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32443,6 +32443,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelCompletePanel: {fileID: 1494360269}
   tapToPlayText: {fileID: 952046856}
+  finalLevelPanel: {fileID: 0}
 --- !u!1001 &933494332
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40495,7 +40496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tapToPlayText: {fileID: 952046857}
   scaleDuration: 0.5
-  scaleAmount: 1.1
+  scaleAmount: 1.3
 --- !u!4 &1177679335
 Transform:
   m_ObjectHideFlags: 0
