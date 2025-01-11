@@ -133,7 +133,7 @@ namespace Hand
         /// </summary>
         public void AddRowToHands()
         {
-            float fixedXOffset = 0.13f; // Sabit X offset değeri
+            float fixedXOffset = 0.14f; // Sabit X offset değeri
             List<GameObject> currentHands = new List<GameObject>(_handLists);
             List<GameObject> newHands = new List<GameObject>();
 
@@ -163,70 +163,10 @@ namespace Hand
 
             _handLists.AddRange(newHands);
         }
-        public void ShiftAllHandsZ(float deltaZ)
-        {
-            float allowedDeltaZ = deltaZ;
-
-            if (deltaZ > 0)
-            {
-                // Z ekseninde yukarı hareket
-                float minAllowed = float.MaxValue;
-                foreach (var hand in _handLists)
-                {
-                    if (hand == mainHand) continue; // mainHand zaten hareket ettirildiği için atla
-                    float allowed = handData.maxZ - hand.transform.position.z;
-                    if (allowed < minAllowed)
-                    {
-                        minAllowed = allowed;
-                    }
-                }
-                allowedDeltaZ = Mathf.Min(deltaZ, minAllowed);
-            }
-            else if (deltaZ < 0)
-            {
-                // Z ekseninde aşağı hareket
-                float maxAllowed = float.MinValue;
-                foreach (var hand in _handLists)
-                {
-                    if (hand == mainHand) continue; // mainHand zaten hareket ettirildiği için atla
-                    float allowed = handData.minZ - hand.transform.position.z;
-                    if (allowed > maxAllowed)
-                    {
-                        maxAllowed = allowed;
-                    }
-                }
-                allowedDeltaZ = Mathf.Max(deltaZ, maxAllowed);
-            }
-
-            // Tüm elleri kaydır
-            foreach (var hand in _handLists)
-            {
-                if (hand == mainHand) continue; // mainHand zaten hareket ettirildiği için atla
-
-                Vector3 newPos = hand.transform.position;
-                newPos.z += allowedDeltaZ;
-                newPos.z = Mathf.Clamp(newPos.z, handData.minZ, handData.maxZ);
-                hand.transform.position = newPos;
-            }
-
-            Debug.Log($"Tüm ellerin Z ekseninde {allowedDeltaZ} kadar kaydırıldı.");
-        }
-        
-        public void MoveAllHandsBy(float deltaZ)
-        {
-            foreach (var hand in _handLists)
-            {
-                Vector3 newPos = hand.transform.position;
-                newPos.z += deltaZ;
-                hand.transform.position = newPos;
-            }
-
-            Debug.Log($"Tüm ellerin Z ekseninde {deltaZ} kadar kaydırıldı.");
-        }
 
         private Vector3 GetNextHandPosition()
         {
-            float fixedZOffset = 0.13f; // Sabit Z offset değeri
+            float fixedZOffset = 0.2f; // Sabit Z offset değeri
             float direction = _addToRight ? 1f : -1f;
             _addToRight = !_addToRight;
 
