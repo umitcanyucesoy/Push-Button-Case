@@ -8,4 +8,5 @@ This project is a 3-4 day clone of Push Button game. Buttons and Hand animations
 - The goal is to collect points by passing through the green doors as much as possible until the end of the game.
 
 ## 🎥 Gameplay
-[![Bus Mania Gameplay](https://img.youtube.com/vi/EQIdemeZK6c/maxresdefault.jpg)](https://www.youtube.com/watch?v=0Hq3DmyLQgs&list=PLu570p6KwizLzSyiK4vwERquCM0sv_DMt&index=3)
+[![Push Button Gameplay](https://img.youtube.com/vi/0Hq3DmyLQgs/maxresdefault.jpg)](https://www.youtube.com/watch?v=0Hq3DmyLQgs)
+
